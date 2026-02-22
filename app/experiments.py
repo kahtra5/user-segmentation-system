@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from uuid import uuid4, UUID
+from sqlalchemy import func
 
 from app.db import get_db
 from app.models import Experiment, ExperimentVariant
@@ -41,7 +42,6 @@ async def create_variant(
     payload: VariantCreate,
     db: AsyncSession = Depends(get_db),
 ):
-    # Check experiment exists
     result = await db.execute(
         select(Experiment).where(Experiment.id == experiment_id)
     )
@@ -49,6 +49,20 @@ async def create_variant(
 
     if not experiment:
         raise HTTPException(status_code=404, detail="Experiment not found")
+
+    # Check current total weight
+    result = await db.execute(
+        select(func.sum(ExperimentVariant.weight)).where(
+            ExperimentVariant.experiment_id == experiment_id
+        )
+    )
+    current_weight = result.scalar() or 0
+
+    if current_weight + payload.weight > 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Total variant weight cannot exceed 100",
+        )
 
     variant = ExperimentVariant(
         id=uuid4(),

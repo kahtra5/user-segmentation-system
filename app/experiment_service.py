@@ -9,8 +9,21 @@ from app.models import (
 from app.assignment_engine import assign_variant
 from uuid import UUID
 
+import json
+from app.cache import redis_client
+
+CACHE_TTL = 60  # Seconds
 
 async def get_user_experiments(user_id: UUID, db: AsyncSession):
+
+    cache_key = f"experiments:{user_id}"
+
+    cached=await redis_client.get(cache_key)
+    if cached:
+        return json.loads(cached)
+
+
+
     # 1️⃣ Fetch user segment IDs
     result = await db.execute(
         select(UserSegment.segment_id).where(UserSegment.user_id == user_id)
