@@ -2,6 +2,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Segment, UserMetrics, UserSegment
 from app.rule_engine import evaluate_rule_group
+from app.cache import redis_client
 import uuid
 
 
@@ -19,6 +20,7 @@ async def evaluate_user_segments(user_id: uuid.UUID, db: AsyncSession):
 
     if not user_metrics:
         await db.commit()
+        await redis_client.delete(f"experiments:{user_id}")
         return []
 
     user_data = {
@@ -48,5 +50,6 @@ async def evaluate_user_segments(user_id: uuid.UUID, db: AsyncSession):
             assigned_segments.append(segment.id)
 
     await db.commit()
+    await redis_client.delete(f"experiments:{user_id}")
 
     return assigned_segments

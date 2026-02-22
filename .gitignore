@@ -1,0 +1,66 @@
+# ===============================
+# Python
+# ===============================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+.env.*
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Mypy
+.mypy_cache/
+
+# ===============================
+# FastAPI / Uvicorn
+# ===============================
+*.log
+
+# ===============================
+# Docker
+# ===============================
+*.tar
+.dockerignore
+
+# Docker override files (optional)
+docker-compose.override.yml
+
+# ===============================
+# Alembic
+# ===============================
+# Keep migrations!
+# DO NOT ignore alembic folder
+# Only ignore compiled files
+alembic/__pycache__/
+
+# ===============================
+# IDEs
+# ===============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===============================
+# OS
+# ===============================
+.DS_Store
+Thumbs.db
+
+# ===============================
+# Local secrets
+# ===============================
+.env
