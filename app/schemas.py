@@ -30,3 +30,36 @@ class SegmentResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class ExperimentCreate(BaseModel):
+    name: str
+    target_segment_id: UUID
+    status: str = "ACTIVE"
+
+
+class VariantCreate(BaseModel):
+    name: str
+    weight: int
+    config: dict
+
+
+class ExperimentResponse(BaseModel):
+    id: UUID
+    name: str
+    target_segment_id: UUID
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+class VariantResponse(BaseModel):
+    id: UUID
+    experiment_id: UUID
+    name: str
+    weight: int
+    config: dict
+
+    class Config:
+        from_attributes = True

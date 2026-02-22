@@ -1,5 +1,5 @@
 # ORM models
-from sqlalchemy import Column, DateTime, Boolean
+from sqlalchemy import Column, DateTime, Boolean, String
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
@@ -97,6 +97,71 @@ class UserSegment(Base):
         UUID(as_uuid=True),
         ForeignKey("segments.id", ondelete="CASCADE"),
         primary_key=True,
+    )
+
+    assigned_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+
+class Experiment(Base):
+    __tablename__ = "experiments"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    name = Column(String(150), nullable=False)
+
+    target_segment_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("segments.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    status = Column(String(20), default="ACTIVE")  # ACTIVE / PAUSED
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+
+class ExperimentVariant(Base):
+    __tablename__ = "experiment_variants"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    experiment_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("experiments.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    name = Column(String(100), nullable=False)
+
+    weight = Column(Integer, nullable=False)
+
+    config = Column(JSONB, nullable=False)
+
+
+class ExperimentAssignment(Base):
+    __tablename__ = "experiment_assignments"
+
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+
+    experiment_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("experiments.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+
+    variant_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("experiment_variants.id"),
+        nullable=False,
     )
 
     assigned_at = Column(
