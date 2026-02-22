@@ -168,3 +168,22 @@ class ExperimentAssignment(Base):
         DateTime(timezone=True),
         server_default=func.now(),
     )
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    user_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    amount = Column(Numeric(12, 2), nullable=False)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )

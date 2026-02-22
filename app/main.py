@@ -5,6 +5,7 @@ from app.db import get_db
 from app.segments import router as segments_router
 from app.experiment_service import get_user_experiments
 from app.experiments import router as experiments_router
+from app.mq import publish_event
 
 
 
@@ -36,3 +37,9 @@ async def evaluate(user_id: UUID, db: AsyncSession = Depends(get_db)):
 @app.get("/experiments/{user_id}")
 async def experiments(user_id: UUID, db: AsyncSession = Depends(get_db)):
     return await get_user_experiments(user_id, db)
+
+
+@app.post("/events/order")
+async def order_event(payload: dict):
+    await publish_event(payload)
+    return {"status": "event_published"}

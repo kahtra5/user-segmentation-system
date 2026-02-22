@@ -83,3 +83,20 @@ async def create_variant(
 async def list_experiments(db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(Experiment))
     return result.scalars().all()
+
+@router.get("/{experiment_id}/activate", response_model=ExperimentResponse)
+async def activate_experiment(experiment_id: UUID, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Experiment).where(Experiment.id == experiment_id)
+    )
+    experiment = result.scalar_one_or_none()
+
+    if not experiment:
+        raise HTTPException(status_code=404, detail="Experiment not found")
+
+    experiment.status = "ACTIVE"
+    db.add(experiment)
+    await db.commit()
+    await db.refresh(experiment)
+
+    return experiment

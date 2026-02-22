@@ -35,7 +35,7 @@ class SegmentResponse(BaseModel):
 class ExperimentCreate(BaseModel):
     name: str
     target_segment_id: UUID
-    status: str = "ACTIVE"
+    status: str = "DRAFT"
 
 
 class VariantCreate(BaseModel):
