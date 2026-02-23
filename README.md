@@ -157,18 +157,3 @@ _Payload examples_ available in tests or via manual curl/HTTPie.
 - **Caching** helps reduce repeated lookups; invalidated on segment changes.
 - **Event-driven** architecture decouples write path, making the service extensible.
 
-## ⏱️ Timeline & Further Work
-
-This PoC can be stood up in a few hours. For production readiness, consider:
-
-1. More complex segment definitions (nested groups, geo, recency, activity events).
-2. Bulk evaluation endpoint, realtime updates (webhooks) or streaming to analytics.
-3. Metrics service separate from API, read replicas for scale.
-4. Observability (logs, metrics, tracing), rate‑limiting, auth.
-5. Service in TypeScript/Golang per original preference.
-
----
-
-Happy hacking! 🧪
-
-Your implementation already captures the essential flow—feel free to build out from here or ask me for help with extensions.
